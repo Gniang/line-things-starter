@@ -296,10 +296,10 @@ function valueChanged(recieveString) {
 function setUseButtonState(isUse, btnName) {
     if (isUse) {
         // press
-        uiToggleStateButton(true);
+        uiToggleStateButton(true, btnName);
     } else {
         // release
-        uiToggleStateButton(false);
+        uiToggleStateButton(false, btnName);
         uiCountPressButton();
     }
 
