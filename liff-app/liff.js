@@ -30,6 +30,8 @@ window.onload = () => {
 // ----------------- //
 
 function handlerToggleLed() {
+    appendLog("pushed")
+
     useState1 = !useState1;
 
     uiToggleLedButton(useState1);
