@@ -53,14 +53,14 @@ function appendLog(message) {
 // UI functions //
 // ------------ //
 
-function uiToggleLedButton(state) {
-    const el = document.getElementById("btn-led-toggle");
+function uiToggleUseButton(state, btn_name) {
+    const el = document.getElementById(btn_name);
+    console.log(el);
     el.innerText = state ? "USED" : "FREE";
-
     if (state) {
-        el.classList.add("led-on");
-    } else {
         el.classList.remove("led-on");
+    } else {
+        el.classList.add("led-on");
     }
 }
 
@@ -73,7 +73,7 @@ function uiCountPressButton() {
 
 function uiToggleStateButton(pressed, btn_name) {
     const el = document.getElementById(btn_name);
-
+    console.log(el);
     if (pressed) {
         el.classList.add("pressed");
         el.innerText = "Pressed";
@@ -282,15 +282,15 @@ function valueChanged(recieveString) {
     const stamp = values[2];
     if (header == "1") {
         const status = ('000' + body).slice(-3);
-        const sts1 = status[0];
-        const sts2 = status[1];
-        const sts3 = status[2];
-        setUseButtonState(sts1, 'btn_use1');
-        setUseButtonState(sts2, 'btn_use2');
-        setUseButtonState(sts3, 'btn_use3');
+        const sts1 = status[0] == "1";
+        const sts2 = status[1] == "1";
+        const sts3 = status[2] == "1";
+        uiToggleUseButton(sts1, 'btn_use1');
+        uiToggleUseButton(sts2, 'btn_use2');
+        uiToggleUseButton(sts3, 'btn_use3');
         console.log(body);
     } else if (header == "2") {
-
+        // ToDo status cloud send
     }
 }
 
