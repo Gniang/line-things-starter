@@ -229,12 +229,6 @@ function liffGetUserService(service) {
         uiStatusError(makeErrorMsg(error), false);
     });
 
-    // StatusView
-    service.getCharacteristic(STS_CHARACTERISTIC_UUID).then(characteristic => {
-        liffGetUseStatusCharacteristic(characteristic);
-    }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
-    });
 
     // Toggle LED
     service.getCharacteristic(USE1_CHARACTERISTIC_UUID).then(characteristic => {
@@ -267,40 +261,28 @@ function liffGetButtonStateCharacteristic(characteristic) {
     characteristic.startNotifications().
         then(() => {
             characteristic.addEventListener('characteristicvaluechanged', e => {
-                const val = (new Uint8Array(e.target.value.buffer))[0];
-                if (val > 0) {
-                    // press
-                    uiToggleStateButton(true);
-                } else {
-                    // release
-                    uiToggleStateButton(false);
-                    uiCountPressButton();
-                }
+                const val = e.target.value;
+                valueChanged(val);
             });
         }).catch(error => {
             uiStatusError(makeErrorMsg(error), false);
         });
 }
 
+function valueChanged(val) {
+    const header = val[0];
+    if (header == "1") {
+        const values = val.slice(1);
+        const status = ('000' + val).slice(-3);
+        const sts1 = status[0];
+        const sts2 = status[1];
+        const sts3 = status[2];
+        setUseButtonState(sts1, 'btn_use1');
+        setUseButtonState(sts2, 'btn_use2');
+        setUseButtonState(sts3, 'btn_use3');
+    } else if (header == "2") {
 
-function liffGetUseStatusCharacteristic(characteristic) {
-    // Add notification hook for button state
-    // (Get notified when button state changes)
-    characteristic.startNotifications().
-        then(() => {
-            characteristic.addEventListener('characteristicvaluechanged', e => {
-                const val = (new Uint8Array(e.target.value.buffer))[0];
-                const status = ('000' + val).slice(-3);
-                const sts1 = status[0];
-                const sts2 = status[1];
-                const sts3 = status[2];
-                setUseButtonState(sts1, 'btn_use1');
-                setUseButtonState(sts2, 'btn_use2');
-                setUseButtonState(sts3, 'btn_use3');
-            });
-        }).catch(error => {
-            uiStatusError(makeErrorMsg(error), false);
-        });
+    }
 }
 
 function setUseButtonState(isUse, btnName) {

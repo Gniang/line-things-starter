@@ -109,9 +109,8 @@ void loop() {
   }
 
   if (M5.BtnC.wasPressed()) {
-    uint8_t btnValue = statusTest;
-    statusCharacteristic->setValue(&btnValue, 1);
-    statusCharacteristic->notify();
+    notifyCharacteristic->setValue("101");
+    notifyCharacteristic->notify();
     statusTest ++;
   }
 
@@ -149,7 +148,6 @@ void setupServices(void) {
   writeCharacteristic->setCallbacks(new writeCallback());
 
   notifyCharacteristic = userService->createCharacteristic(NOTIFY_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_NOTIFY);
-  statusCharacteristic = userService->createCharacteristic(STS_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_NOTIFY);
   notifyCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   BLE2902* ble9202 = new BLE2902();
   ble9202->setNotifications(true);
