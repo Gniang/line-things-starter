@@ -265,8 +265,9 @@ function liffGetButtonStateCharacteristic(characteristic) {
     characteristic.startNotifications().
         then(() => {
             characteristic.addEventListener('characteristicvaluechanged', e => {
-                appendLog(e.target.value)
-                const val = e.target.value.toString();
+                const buff = new Uint8Array(e.target.value.buffer);
+                const val = new TextDecoder().decode(buff);
+                appendLog(val);
                 valueChanged(val);
             });
         }).catch(error => {
