@@ -12,9 +12,6 @@ const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 
 // UI settings
-let useState1 = false; // true: LED on, false: LED off
-let useState2 = false; // true: LED on, false: LED off
-let useState3 = false; // true: LED on, false: LED off
 let clickCount = 0;
 
 // -------------- //
