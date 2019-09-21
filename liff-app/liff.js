@@ -42,7 +42,7 @@ function appendLog(message) {
     const el = document.getElementById("logs");
     var log = document.createElement('span');
     var br = document.createElement('br');
-    log.textContent = message;
+    log.innerText = message;
 
     //最後の子要素として追加
     el.appendChild(log);
