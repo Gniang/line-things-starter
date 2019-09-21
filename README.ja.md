@@ -1,3 +1,5 @@
+# testです!
+
 # LINE Things Starter
 
 LINE Things Developer Trial 向けのサンプルコードです。
