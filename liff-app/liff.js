@@ -217,6 +217,7 @@ function liffConnectToDevice(device) {
         };
 
         device.addEventListener('gattserverdisconnected', disconnectCallback);
+        handlerRefresh();
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
