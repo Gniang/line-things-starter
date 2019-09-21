@@ -29,16 +29,13 @@ window.onload = () => {
 // Handler functions //
 // ----------------- //
 
-function handlerUseBtnOnClick(e) {
-    appendLog("pushed")
-    const name = e.target.id;
-    if (name == "btn_use1") {
-        liffSendMsg("1");
-    } else if (name == "btn_use2") {
-        liffSendMsg("2");
-    } else if (name == "btn_use3") {
-        liffSendMsg("3");
-    }
+function handlerUseBtnOnClick(value) {
+    liffSendMsg(value);
+}
+
+
+function handlerRefresh() {
+    liffSendMsg("0");
 }
 
 function appendLog(message) {

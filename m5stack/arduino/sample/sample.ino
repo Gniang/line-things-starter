@@ -20,6 +20,9 @@
 #define TEXT_X (M5.Lcd.width() / 2)
 #define TEXT_Y (M5.Lcd.height() / 2 / 2)
 
+
+void sendStatus();
+
 BLEServer* thingsServer;
 BLESecurity *thingsSecurity;
 BLEService* userService;
@@ -61,27 +64,26 @@ class writeCallback: public BLECharacteristicCallbacks {
 //        M5.Lcd.drawString("LED: OFF", TEXT_X, TEXT_Y);
 //      }
 //    }
-      if(value == "0"){
-        sendStatus();
-      }
-      else if (value == "1") {
-        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
-        M5.Lcd.setTextColor(BLACK);
-        M5.Lcd.setTextSize(4);
-        M5.Lcd.drawString("USE 1", TEXT_X, TEXT_Y);
-      }
-      else if(value == "2") {
-        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
-        M5.Lcd.setTextColor(BLACK);
-        M5.Lcd.setTextSize(4);
-        M5.Lcd.drawString("USE 2", TEXT_X, TEXT_Y);
-      }      
-      else if(value == "3") {
-        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
-        M5.Lcd.setTextColor(BLACK);
-        M5.Lcd.setTextSize(4);
-        M5.Lcd.drawString("USE 3", TEXT_X, TEXT_Y);
-      }
+    if(value == "0"){
+      sendStatus();
+    }
+    else if (value == "1") {
+      M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
+      M5.Lcd.setTextColor(BLACK);
+      M5.Lcd.setTextSize(4);
+      M5.Lcd.drawString("USE 1", TEXT_X, TEXT_Y);
+    }
+    else if(value == "2") {
+      M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
+      M5.Lcd.setTextColor(BLACK);
+      M5.Lcd.setTextSize(4);
+      M5.Lcd.drawString("USE 2", TEXT_X, TEXT_Y);
+    }      
+    else if(value == "3") {
+      M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
+      M5.Lcd.setTextColor(BLACK);
+      M5.Lcd.setTextSize(4);
+      M5.Lcd.drawString("USE 3", TEXT_X, TEXT_Y);
     }
   }
 };
