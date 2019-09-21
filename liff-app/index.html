@@ -12,6 +12,15 @@
   <!-- Title -->
   <h2>Status USB Memory USED</h2>
   <hr />
+
+  <!-- Toggle LED -->
+  <p>
+    <button id="btn1" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
+    <button id="btn2" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
+    <button id="btn3" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
+  </p>
+  <hr />
+
   <p>
     <img id="loading-animation" class="" src="loading.gif" height="14px" />
     <span id="status" class="inactive">Device disconnected</span>
@@ -43,13 +52,6 @@
         <td class="device-info-cell device-info-val" id="click-count">0</td>
       </tr>
     </table>
-    <hr />
-    <!-- Toggle LED -->
-    <p>
-      <button id="btn-led-toggle" class="btn btn-led-toggle" onclick="handlerToggleLed()">USE</button>
-      <button id="btn-led-toggle" class="btn btn-led-toggle" onclick="handlerToggleLed()">USE</button>
-      <button id="btn-led-toggle" class="btn btn-led-toggle" onclick="handlerToggleLed()">USE</button>
-    </p>
     <hr />
   </div>
 </body>

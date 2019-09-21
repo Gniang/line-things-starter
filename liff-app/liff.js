@@ -17,7 +17,9 @@ const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 
 // UI settings
-let ledState = false; // true: LED on, false: LED off
+let useState1 = false; // true: LED on, false: LED off
+let useState2 = false; // true: LED on, false: LED off
+let useState3 = false; // true: LED on, false: LED off
 let clickCount = 0;
 
 // -------------- //
@@ -33,10 +35,10 @@ window.onload = () => {
 // ----------------- //
 
 function handlerToggleLed() {
-    ledState = !ledState;
+    useState1 = !useState1;
 
-    uiToggleLedButton(ledState);
-    liffToggleDeviceLedState(ledState);
+    uiToggleLedButton(useState1);
+    liffToggleDeviceLedState(useState1);
 }
 
 // ------------ //
@@ -45,7 +47,7 @@ function handlerToggleLed() {
 
 function uiToggleLedButton(state) {
     const el = document.getElementById("btn-led-toggle");
-    el.innerText = state ? "USE" : "USED";
+    el.innerText = state ? "USED" : "FREE";
 
     if (state) {
         el.classList.add("led-on");
@@ -200,7 +202,7 @@ function liffConnectToDevice(device) {
             device.removeEventListener('gattserverdisconnected', disconnectCallback);
 
             // Reset LED state
-            ledState = false;
+            useState1 = false;
             // Reset UI elements
             uiToggleLedButton(false);
             uiToggleStateButton(false);
