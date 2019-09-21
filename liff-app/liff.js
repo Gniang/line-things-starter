@@ -308,7 +308,7 @@ function setUseButtonState(isUse, btnName) {
 
 function liffSendMsg(msg) {
     appendLog(msg);
-    console.log(msg);
+    console.log("send: " + msg);
     window.ledCharacteristic.writeValue(
         msg
     ).catch(error => {
