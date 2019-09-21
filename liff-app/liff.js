@@ -288,6 +288,7 @@ function valueChanged(recieveString) {
         setUseButtonState(sts1, 'btn_use1');
         setUseButtonState(sts2, 'btn_use2');
         setUseButtonState(sts3, 'btn_use3');
+        console.log(body);
     } else if (header == "2") {
 
     }
