@@ -12,6 +12,10 @@ const RTN1_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
 const RTN2_CHARACTERISTIC_UUID = '63BA633B-F04D-4A09-8BC3-706B1BBB0C49';
 const RTN3_CHARACTERISTIC_UUID = '6C07BEA6-600C-4DAE-8873-90C861CE5A84';
 
+// ステータス受領,更新
+const STS_CHARACTERISTIC_UUID = '88CD8AB6-D1B3-4519-A28E-E5FCE9AA3F16';
+const REF_CHARACTERISTIC_UUID = '905D1580-F583-4101-A3C3-ECADBAA3C6A1';
+
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
@@ -63,8 +67,8 @@ function uiCountPressButton() {
     el.innerText = clickCount;
 }
 
-function uiToggleStateButton(pressed) {
-    const el = document.getElementById("btn-state");
+function uiToggleStateButton(pressed, btn_name) {
+    const el = document.getElementById(btn_name);
 
     if (pressed) {
         el.classList.add("pressed");
@@ -225,6 +229,13 @@ function liffGetUserService(service) {
         uiStatusError(makeErrorMsg(error), false);
     });
 
+    // StatusView
+    service.getCharacteristic(STS_CHARACTERISTIC_UUID).then(characteristic => {
+        liffGetUseStatusCharacteristic(characteristic);
+    }).catch(error => {
+        uiStatusError(makeErrorMsg(error), false);
+    });
+
     // Toggle LED
     service.getCharacteristic(USE1_CHARACTERISTIC_UUID).then(characteristic => {
         window.ledCharacteristic = characteristic;
@@ -253,21 +264,55 @@ function liffGetPSDIService(service) {
 function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
-    characteristic.startNotifications().then(() => {
-        characteristic.addEventListener('characteristicvaluechanged', e => {
-            const val = (new Uint8Array(e.target.value.buffer))[0];
-            if (val > 0) {
-                // press
-                uiToggleStateButton(true);
-            } else {
-                // release
-                uiToggleStateButton(false);
-                uiCountPressButton();
-            }
+    characteristic.startNotifications().
+        then(() => {
+            characteristic.addEventListener('characteristicvaluechanged', e => {
+                const val = (new Uint8Array(e.target.value.buffer))[0];
+                if (val > 0) {
+                    // press
+                    uiToggleStateButton(true);
+                } else {
+                    // release
+                    uiToggleStateButton(false);
+                    uiCountPressButton();
+                }
+            });
+        }).catch(error => {
+            uiStatusError(makeErrorMsg(error), false);
         });
-    }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
-    });
+}
+
+
+function liffGetUseStatusCharacteristic(characteristic) {
+    // Add notification hook for button state
+    // (Get notified when button state changes)
+    characteristic.startNotifications().
+        then(() => {
+            characteristic.addEventListener('characteristicvaluechanged', e => {
+                const val = (new Uint8Array(e.target.value.buffer))[0];
+                const status = ('000' + val).slice(-3);
+                const sts1 = status[0];
+                const sts2 = status[1];
+                const sts3 = status[2];
+                setUseButtonState(sts1, 'btn_use1');
+                setUseButtonState(sts2, 'btn_use2');
+                setUseButtonState(sts3, 'btn_use3');
+            });
+        }).catch(error => {
+            uiStatusError(makeErrorMsg(error), false);
+        });
+}
+
+function setUseButtonState(isUse, btnName) {
+    if (isUse) {
+        // press
+        uiToggleStateButton(true);
+    } else {
+        // release
+        uiToggleStateButton(false);
+        uiCountPressButton();
+    }
+
 }
 
 function liffToggleDeviceLedState(state) {

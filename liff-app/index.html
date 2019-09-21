@@ -10,16 +10,18 @@
 
 <body>
   <!-- Title -->
-  <h2>Status USB Memory USED</h2>
+  <h4>USB Memory Lending Status</h4>
   <hr />
 
   <!-- Toggle LED -->
-  <p>
-    <button id="btn1" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
-    <button id="btn2" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
-    <button id="btn3" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
-  </p>
+  <div class="status--layout">
+    <button id="btn_use1" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
+    <button id="btn_use2" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
+    <button id="btn_use3" class="btn btn-led-toggle" onclick="handlerToggleLed()">FREE</button>
+  </div>
   <hr />
+
+  <button id="btn_refresh" class="btn" onclick="handlerRefresh()">FREE</button>
 
   <p>
     <img id="loading-animation" class="" src="loading.gif" height="14px" />

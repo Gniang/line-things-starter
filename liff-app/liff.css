@@ -10,12 +10,19 @@ p {
     padding: 0pt 14pt;
 }
 
+.status--layout{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .btn {
     padding: 2pt;
     font-size: 14pt;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-self: center;
 }
 
 .btn-led-toggle {
