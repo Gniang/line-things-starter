@@ -47,18 +47,40 @@ class serverCallbacks: public BLEServerCallbacks {
 class writeCallback: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *bleWriteCharacteristic) {
     std::string value = bleWriteCharacteristic->getValue();
-    if ((char)value[0] <= 1) {
-      if ((char)value[0] == 1) {
+//    if ((char)value[0] <= 1) {
+//      if ((char)value[0] == 1) {
+//        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
+//        M5.Lcd.setTextColor(BLACK);
+//        M5.Lcd.setTextSize(4);
+//        M5.Lcd.drawString("LED: ON ", TEXT_X, TEXT_Y);
+//      }
+//      else {
+//        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, BLACK);
+//        M5.Lcd.setTextColor(WHITE);
+//        M5.Lcd.setTextSize(4);
+//        M5.Lcd.drawString("LED: OFF", TEXT_X, TEXT_Y);
+//      }
+//    }
+      if(value == "0"){
+        sendStatus();
+      }
+      else if (value == "1") {
         M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
         M5.Lcd.setTextColor(BLACK);
         M5.Lcd.setTextSize(4);
-        M5.Lcd.drawString("LED: ON ", TEXT_X, TEXT_Y);
+        M5.Lcd.drawString("USE 1", TEXT_X, TEXT_Y);
       }
-      else {
-        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, BLACK);
-        M5.Lcd.setTextColor(WHITE);
+      else if(value == "2") {
+        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
+        M5.Lcd.setTextColor(BLACK);
         M5.Lcd.setTextSize(4);
-        M5.Lcd.drawString("LED: OFF", TEXT_X, TEXT_Y);
+        M5.Lcd.drawString("USE 2", TEXT_X, TEXT_Y);
+      }      
+      else if(value == "3") {
+        M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
+        M5.Lcd.setTextColor(BLACK);
+        M5.Lcd.setTextSize(4);
+        M5.Lcd.drawString("USE 3", TEXT_X, TEXT_Y);
       }
     }
   }
@@ -103,14 +125,9 @@ void loop() {
     notifyCharacteristic->notify();
   }
 
+  // ステータスを返す
   if (M5.BtnC.wasPressed()) {
-
-    String value = "1,101,";
-    value.concat(nextStamp());
-    value.toCharArray(sendbuffer, value.length()+1);
-    notifyCharacteristic->setValue(sendbuffer);
-    //notifyCharacteristic->setValue("1,101,");
-    notifyCharacteristic->notify();
+    sendStatus();
   }
 
 
@@ -132,6 +149,14 @@ void loop() {
     M5.Lcd.setTextSize(2);
     M5.Lcd.drawString("Connected", TEXT_X, TEXT_Y);
   }
+}
+
+void sendStatus(){
+    String value = "1,101,"; //1…ID、101…ステータス（１、３個目が使用中） 
+    value.concat(nextStamp());
+    value.toCharArray(sendbuffer, value.length()+1);
+    notifyCharacteristic->setValue(sendbuffer);
+    notifyCharacteristic->notify();
 }
 
 String nextStamp(){   

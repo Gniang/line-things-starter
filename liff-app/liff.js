@@ -29,13 +29,16 @@ window.onload = () => {
 // Handler functions //
 // ----------------- //
 
-function handlerToggleLed() {
+function handlerUseBtnOnClick(e) {
     appendLog("pushed")
-
-    useState1 = !useState1;
-
-    uiToggleLedButton(useState1);
-    liffToggleDeviceLedState(useState1);
+    const name = e.target.id;
+    if (name == "btn_use1") {
+        liffSendMsg("1");
+    } else if (name == "btn_use2") {
+        liffSendMsg("2");
+    } else if (name == "btn_use3") {
+        liffSendMsg("3");
+    }
 }
 
 function appendLog(message) {
@@ -239,7 +242,7 @@ function liffGetUserService(service) {
         window.ledCharacteristic = characteristic;
 
         // Switch off by default
-        liffToggleDeviceLedState(false);
+        liffSendMsg(false);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -306,11 +309,10 @@ function setUseButtonState(isUse, btnName) {
 
 }
 
-function liffToggleDeviceLedState(state) {
-    // on: 0x01
-    // off: 0x00
+function liffSendMsg(msg) {
+    console.log(msg);
     window.ledCharacteristic.writeValue(
-        state ? new Uint8Array([0x01]) : new Uint8Array([0x00])
+        msg
     ).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
