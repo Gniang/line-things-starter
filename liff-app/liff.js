@@ -275,11 +275,13 @@ function liffGetButtonStateCharacteristic(characteristic) {
         });
 }
 
-function valueChanged(val) {
-    const header = val[0];
-    const values = val.slice(1);
+function valueChanged(recieveString) {
+    const values = recieveString.split(',');
+    const header = values[0];
+    const body = values[1];
+    const stamp = values[2];
     if (header == "1") {
-        const status = ('000' + values).slice(-3);
+        const status = ('000' + body).slice(-3);
         const sts1 = status[0];
         const sts2 = status[1];
         const sts3 = status[2];

@@ -29,8 +29,10 @@ BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
 
 
+long timestamp = 1;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
+char sendbuffer[100];
 
 class serverCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -90,7 +92,6 @@ void setup() {
 void loop() {
   M5.update();
 
-  uint8_t statusTest = 1;
 
   if (M5.BtnB.wasPressed()) {
     uint8_t btnValue = 1;
@@ -103,7 +104,12 @@ void loop() {
   }
 
   if (M5.BtnC.wasPressed()) {
-    notifyCharacteristic->setValue("1101");
+
+    String value = "1,101,";
+    value.concat(nextStamp());
+    value.toCharArray(sendbuffer, value.length()+1);
+    notifyCharacteristic->setValue(sendbuffer);
+    //notifyCharacteristic->setValue("1,101,");
     notifyCharacteristic->notify();
   }
 
@@ -126,6 +132,14 @@ void loop() {
     M5.Lcd.setTextSize(2);
     M5.Lcd.drawString("Connected", TEXT_X, TEXT_Y);
   }
+}
+
+String nextStamp(){   
+    timestamp++;
+    if(timestamp > 9){
+      timestamp = 0;
+    }
+    return String(timestamp); 
 }
 
 void setupServices(void) {
