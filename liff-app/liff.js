@@ -1,8 +1,16 @@
 // User service UUID: Change this to your generated service UUID
 const USER_SERVICE_UUID = '9DD76B74-9301-4904-9D22-9096F561F4F8'; // LED, Button
+
 // User service characteristics
-const LED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
-const BTN_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+// 借りる宣言
+const USE1_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
+const USE2_CHARACTERISTIC_UUID = '02DD98B0-96F9-4AE9-A04F-297D0C938FA1';
+const USE3_CHARACTERISTIC_UUID = '5A4AA719-AC7B-41D7-AB68-2656B7CDEC95';
+
+// 返し受領
+const RTN1_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+const RTN2_CHARACTERISTIC_UUID = '63BA633B-F04D-4A09-8BC3-706B1BBB0C49';
+const RTN3_CHARACTERISTIC_UUID = '6C07BEA6-600C-4DAE-8873-90C861CE5A84';
 
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'E625601E-9E55-4597-A598-76018A0D293D'; // Device ID
@@ -37,7 +45,7 @@ function handlerToggleLed() {
 
 function uiToggleLedButton(state) {
     const el = document.getElementById("btn-led-toggle");
-    el.innerText = state ? "Switch LED OFF" : "Switch LED ON";
+    el.innerText = state ? "USE" : "USED";
 
     if (state) {
         el.classList.add("led-on");
@@ -209,14 +217,14 @@ function liffConnectToDevice(device) {
 
 function liffGetUserService(service) {
     // Button pressed state
-    service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
+    service.getCharacteristic(RTN1_CHARACTERISTIC_UUID).then(characteristic => {
         liffGetButtonStateCharacteristic(characteristic);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
 
     // Toggle LED
-    service.getCharacteristic(LED_CHARACTERISTIC_UUID).then(characteristic => {
+    service.getCharacteristic(USE1_CHARACTERISTIC_UUID).then(characteristic => {
         window.ledCharacteristic = characteristic;
 
         // Switch off by default
