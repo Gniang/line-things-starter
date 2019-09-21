@@ -27,12 +27,12 @@ window.onload = () => {
 // ----------------- //
 
 function handlerUseBtnOnClick(value) {
-    liffSendMsg(value);
+    liffSendNum(value);
 }
 
 
 function handlerRefresh() {
-    liffSendMsg("0");
+    liffSendNum("0");
 }
 
 function appendLog(message) {
@@ -236,7 +236,7 @@ function liffGetUserService(service) {
         window.ledCharacteristic = characteristic;
 
         // Switch off by default
-        liffSendMsg(false);
+        liffSendNum(false);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -303,11 +303,12 @@ function setUseButtonState(isUse, btnName) {
 
 }
 
-function liffSendMsg(msg) {
-    appendLog(msg);
-    console.log("send: " + msg);
+function liffSendNum(num) {
+    appendLog(num);
+    console.log("send: " + num);
+    const arrayBuffe = new TextEncoder().encode(num);
     window.ledCharacteristic.writeValue(
-        msg
+        arrayBuffe
     ).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
