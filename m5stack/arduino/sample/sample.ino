@@ -12,9 +12,6 @@
 // User service characteristics
 #define WRITE_CHARACTERISTIC_UUID "E9062E71-9E62-4BC6-B0D3-35CDCD9B027B"
 #define NOTIFY_CHARACTERISTIC_UUID "62FBD229-6EDD-4D1A-B554-5C4E1BB29169"
-// ステータス受領,更新
-#define STS_CHARACTERISTIC_UUID  "88CD8AB6-D1B3-4519-A28E-E5FCE9AA3F16"
-#define REF_CHARACTERISTIC_UUID  "905D1580-F583-4101-A3C3-ECADBAA3C6A1"
 
 // PSDI Service UUID: Fixed value for Developer Trial
 #define PSDI_SERVICE_UUID "E625601E-9E55-4597-A598-76018A0d293D"
@@ -30,9 +27,6 @@ BLEService* psdiService;
 BLECharacteristic* psdiCharacteristic;
 BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
-BLECharacteristic* statusCharacteristic;
-
-uint8_t statusTest = 1;
 
 
 bool deviceConnected = false;
@@ -109,9 +103,8 @@ void loop() {
   }
 
   if (M5.BtnC.wasPressed()) {
-    notifyCharacteristic->setValue("101");
+    notifyCharacteristic->setValue("1101");
     notifyCharacteristic->notify();
-    statusTest ++;
   }
 
 
