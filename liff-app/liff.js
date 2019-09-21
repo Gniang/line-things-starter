@@ -36,6 +36,17 @@ function handlerToggleLed() {
     liffToggleDeviceLedState(useState1);
 }
 
+function appendLog(message) {
+    const el = document.getElementById("logs");
+    var log = document.createElement('span');
+    var br = document.createElement('br');
+    log.textContent = message;
+
+    //最後の子要素として追加
+    el.appendChild(log);
+    el.appendChild(br);
+}
+
 // ------------ //
 // UI functions //
 // ------------ //
@@ -252,6 +263,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     characteristic.startNotifications().
         then(() => {
             characteristic.addEventListener('characteristicvaluechanged', e => {
+                appendLog(e.target.value)
                 const val = e.target.value.toString();
                 valueChanged(val);
             });
