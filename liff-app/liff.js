@@ -28,6 +28,7 @@ window.onload = () => {
 
 function handlerUseBtnOnClick(value) {
     liffSendNum(value);
+    sendRireki(value);
 }
 
 
@@ -68,17 +69,6 @@ function uiCountPressButton() {
     el.innerText = clickCount;
 }
 
-function uiToggleStateButton(pressed, btn_name) {
-    const el = document.getElementById(btn_name);
-    console.log(el);
-    if (pressed) {
-        el.classList.add("pressed");
-        el.innerText = "Pressed";
-    } else {
-        el.classList.remove("pressed");
-        el.innerText = "Released";
-    }
-}
 
 function uiToggleDeviceConnected(connected) {
     const elStatus = document.getElementById("status");
@@ -273,6 +263,26 @@ function liffGetButtonStateCharacteristic(characteristic) {
         });
 }
 
+
+
+function sendRireki(usb_id) {
+    $.get('https://us-central1-forestiot.cloudfunctions.net/function-1',
+        {
+            user: 'developer' + PSDI_SERVICE_UUID, //ToDo デバイスID
+            usb_id: 3
+        })
+}
+
+
+function sendStatus(sts1, sts2, sts3) {
+    $.get('https://us-central1-forestiot.cloudfunctions.net/syncUSBRentalStatus',
+        {
+            usb1: sts1 ? "USED" : "FREE",
+            usb2: sts2 ? "USED" : "FREE",
+            usb3: sts3 ? "USED" : "FREE",
+        })
+}
+
 function valueChanged(recieveString) {
     const values = recieveString.split(',');
     const header = values[0];
@@ -287,8 +297,10 @@ function valueChanged(recieveString) {
         uiToggleUseButton(sts2, 'btn_use2');
         uiToggleUseButton(sts3, 'btn_use3');
         console.log(body);
+        sendStatus(sts1, sts2, sts3);
     } else if (header == "2") {
         // ToDo status cloud send
+
     }
 }
 

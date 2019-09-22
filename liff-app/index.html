@@ -6,27 +6,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <script src=" https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="liff.js"></script>
   <link rel="stylesheet" type="text/css" href="liff.css" />
-  <title>USB Memory Lending</title>
+  <title>Smart USB Locker</title>
 </head>
 
 <body>
   <!-- Title -->
   <hr />
 
-  <!-- Toggle LED -->
-  <div class="status--layout">
-    <button id="btn_use1" class="btn btn-led-toggle " onclick="handlerUseBtnOnClick('1')">FREE</button>
-    <button id="btn_use2" class="btn btn-led-toggle " onclick="handlerUseBtnOnClick('2')">FREE</button>
-    <button id="btn_use3" class="btn btn-led-toggle " onclick="handlerUseBtnOnClick('3')">FREE</button>
-  </div>
-  <hr />
 
-  <button id="btn_refresh" class="btn" onclick="handlerRefresh()">Refresh</button>
 
-  <p id="logs">
-  </p>
 
   <p>
     <img id="loading-animation" class="" src="loading.gif" height="14px" />
@@ -34,6 +26,19 @@
   </p>
   <hr />
   <div id="controls" class="hidden">
+    <!-- Toggle LED -->
+    <div class="status--layout">
+      <button id="btn_use1" class="btn btn-led-toggle " onclick="handlerUseBtnOnClick('1')">FREE</button>
+      <button id="btn_use2" class="btn btn-led-toggle " onclick="handlerUseBtnOnClick('2')">FREE</button>
+      <button id="btn_use3" class="btn btn-led-toggle " onclick="handlerUseBtnOnClick('3')">FREE</button>
+    </div>
+    <hr />
+
+    <button id="btn_refresh" class="btn" onclick="handlerRefresh()">Refresh</button>
+
+    <hr />
+    <hr />
+
     <!-- Device Info Table -->
     <table class="device-info-table">
       <tr>
@@ -59,6 +64,9 @@
         <td class="device-info-cell device-info-val" id="click-count">0</td>
       </tr>
     </table>
+
+    <p id="logs">
+    </p>
     <hr />
   </div>
 </body>
