@@ -269,7 +269,7 @@ function sendRireki(usb_id) {
     $.get('https://us-central1-forestiot.cloudfunctions.net/function-1',
         {
             user: 'developer' + PSDI_SERVICE_UUID, //ToDo デバイスID
-            usb_id: 3
+            usb_id: usb_id
         })
 }
 
