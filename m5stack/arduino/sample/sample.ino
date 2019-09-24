@@ -1,4 +1,6 @@
 #include <M5Stack.h>
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
 #include <BLEServer.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -20,8 +22,46 @@
 #define TEXT_X (M5.Lcd.width() / 2)
 #define TEXT_Y (M5.Lcd.height() / 2 / 2)
 
+// Servo
+// called this way, it uses the default address 0x40
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+// you can also call it with a different address you want
+//Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x41);
+// you can also call it with a different address and I2C interface
+//Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40, &Wire);
+
+// Depending on your servo make, the pulse width min and max may vary, you 
+// want these to be as small/large as possible without hitting the hard stop
+// for max range. You'll have to tweak them as necessary to match the servos you
+// have!
+#define SERVOMIN  150 // this is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  600 // this is the 'maximum' pulse length count (out of 4096)
+// 600
+
+// our servo # counter
+uint8_t servonum = 0;
+
+typedef enum{
+  LOCK,
+  UNLOCK
+} LockState;
+
+// typedef structしたいけど、関数にtypedef struct渡しはできないため真面目にstruct XXXする
+// 参考:https://jiwashin.blogspot.com/2016/06/arduino-can-not-use-structure-as-parameter-of-function-in-sketch.html
+struct ServoStatus{
+  int servoNumber;
+  LockState lockState;
+};
+
+struct ServoStatus ServoStatus1 = { 0 , LOCK };
+struct ServoStatus ServoStatus2 = { 1 , LOCK };
+struct ServoStatus ServoStatus3 = { 2 , LOCK };
 
 void sendStatus();
+bool IsServoLock(struct ServoStatus *);
+bool IsServoUnlock(struct ServoStatus *);
+void ServoLock(struct ServoStatus *);
+void ServoUnlock(struct ServoStatus *);
 
 BLEServer* thingsServer;
 BLESecurity *thingsSecurity;
@@ -30,7 +70,6 @@ BLEService* psdiService;
 BLECharacteristic* psdiCharacteristic;
 BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
-
 
 long timestamp = 1;
 bool deviceConnected = false;
@@ -65,28 +104,84 @@ class writeCallback: public BLECharacteristicCallbacks {
 //      }
 //    }
     if(value == "0"){
-      sendStatus();
+      
     }
     else if (value == "1") {
       M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
       M5.Lcd.setTextColor(BLACK);
       M5.Lcd.setTextSize(4);
       M5.Lcd.drawString("USE 1", TEXT_X, TEXT_Y);
+      
+      if(IsServoLock(&ServoStatus1)){
+        ServoUnlock(&ServoStatus1);
+      }
     }
     else if(value == "2") {
       M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
       M5.Lcd.setTextColor(BLACK);
       M5.Lcd.setTextSize(4);
       M5.Lcd.drawString("USE 2", TEXT_X, TEXT_Y);
+      
+      if(IsServoLock(&ServoStatus2)){
+        ServoUnlock(&ServoStatus2);
+      }
     }      
     else if(value == "3") {
       M5.Lcd.fillRect(0, 0, M5.Lcd.width(), M5.Lcd.height() / 2, WHITE);
       M5.Lcd.setTextColor(BLACK);
       M5.Lcd.setTextSize(4);
       M5.Lcd.drawString("USE 3", TEXT_X, TEXT_Y);
+      
+      if(IsServoLock(&ServoStatus3)){
+        ServoUnlock(&ServoStatus3);
+      }
     }
+    sendStatus();
   }
 };
+
+// Servo
+
+// you can use this function if you'd like to set the pulse length in seconds
+// e.g. setServoPulse(0, 0.001) is a ~1 millisecond pulse width. its not precise!
+void setServoPulse(uint8_t n, double pulse) {
+  double pulselength;
+  
+  pulselength = 1000000;   // 1,000,000 us per second
+  pulselength /= 60;   // 60 Hz
+  Serial.print(pulselength); Serial.println(" us per period"); 
+  pulselength /= 4096;  // 12 bits of resolution
+  Serial.print(pulselength); Serial.println(" us per bit"); 
+  pulse *= 1000000;  // convert to us
+  pulse /= pulselength;
+  Serial.println(pulse);
+  pwm.setPWM(n, 0, pulse);
+}
+
+void ServoLock(struct ServoStatus *servoStatus){
+    for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) {
+      pwm.setPWM(servoStatus->servoNumber, 0, pulselen);
+    }
+    servoStatus->lockState = LOCK;
+}
+
+void ServoUnlock(struct ServoStatus *servoStatus){
+    for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--) {
+      pwm.setPWM(servoStatus->servoNumber, 0, pulselen);
+    }
+    servoStatus->lockState = UNLOCK;
+}
+
+bool IsServoLock(struct ServoStatus *servoStatus){
+  if(servoStatus->lockState == LOCK) return true;
+  else return false;
+}
+
+bool IsServoUnlock(struct ServoStatus *servoStatus){
+  if(servoStatus->lockState == UNLOCK) return true;
+  else return false;
+}
+
 
 void setup() {
   M5.begin();
@@ -111,24 +206,39 @@ void setup() {
   M5.Lcd.setTextSize(2);
   M5.Lcd.drawString("Ready to Connect", TEXT_X, TEXT_Y);
   Serial.println("Ready to Connect");
+
+  // Servo Setup
+  Serial.begin(9600);
+  Serial.println("8 channel Servo start");
+  
+  pwm.begin();
+  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+
+  delay(10);
 }
 
 void loop() {
   M5.update();
 
-
-  if (M5.BtnB.wasPressed()) {
-    uint8_t btnValue = 1;
-    notifyCharacteristic->setValue(&btnValue, 1);
-    notifyCharacteristic->notify();
-  } else if (M5.BtnB.wasReleased()) {
-    uint8_t btnValue = 0;
-    notifyCharacteristic->setValue(&btnValue, 1);
-    notifyCharacteristic->notify();
+  // Servo
+  if(M5.BtnA.wasPressed()){
+    if(IsServoUnlock(&ServoStatus1)){
+      ServoLock(&ServoStatus1);
+    }
+    sendStatus();
   }
-
-  // ステータスを返す
-  if (M5.BtnC.wasPressed()) {
+  
+  if(M5.BtnB.wasPressed()){
+    if(IsServoUnlock(&ServoStatus2)){
+      ServoLock(&ServoStatus2);
+    }
+    sendStatus();
+  }
+  
+  if(M5.BtnC.wasPressed()){
+    if(IsServoUnlock(&ServoStatus3)){
+      ServoLock(&ServoStatus3);
+    }
     sendStatus();
   }
 
@@ -154,11 +264,36 @@ void loop() {
 }
 
 void sendStatus(){
-    String value = "1,101,"; //1…ID、101…ステータス（１、３個目が使用中） 
+    String value = "1,"; //1…ID、101…ステータス（１、３個目が使用中）
+    value.concat(servoStatus(&ServoStatus1,&ServoStatus2,&ServoStatus3)); 
+    value.concat(",");
     value.concat(nextStamp());
     value.toCharArray(sendbuffer, value.length()+1);
     notifyCharacteristic->setValue(sendbuffer);
     notifyCharacteristic->notify();
+}
+
+String servoStatus(struct ServoStatus *ServoStatus1,struct ServoStatus *ServoStatus2,struct ServoStatus *ServoStatus3){
+  String value = "";
+  if(ServoStatus1->lockState == LOCK){
+    value.concat(String(0));
+  }else{
+    value.concat(String(1));
+  }
+
+  if(ServoStatus2->lockState == LOCK){
+    value.concat(String(0));
+  }else{
+    value.concat(String(1));
+  }
+
+  if(ServoStatus3->lockState == LOCK){
+    value.concat(String(0));
+  }else{
+    value.concat(String(1a));
+  }
+
+  return value;
 }
 
 String nextStamp(){   
