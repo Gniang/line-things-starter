@@ -1,6 +1,6 @@
 ## 最新状態同期関数
 ### トリガーURL
-https://us-central1-forestiot.cloudfunctions.net/function-1 
+https://us-central1-forestiot.cloudfunctions.net/syncUSBRentalStatus
 ### 概要
 - LIFFアプリがデバイスから備品貸出の最新状態を受信するタイミングで動作する。
 - kintoneに備品の貸出状態を送信し、最新状態を示すレコードを更新する。
