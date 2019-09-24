@@ -7,6 +7,7 @@ https://us-central1-forestiot.cloudfunctions.net/function-1
 
 ### Kintoneアプリ（保存先テーブル）のスキーマ 
 （1件のみのレコードを事前に作成しておく）
+
 |フィールドコード|種類|
 |-|-|-|
 |usb1|文字列（1行）|
@@ -21,6 +22,7 @@ https://us-central1-forestiot.cloudfunctions.net/function-1
 - kintoneに利用ユーザIDと備品IDを送信し、履歴レコードを追加する。
 
 ### Kintoneアプリ（保存先テーブル）のスキーマ 
+
 |フィールドコード|種類|
 |-|-|-|
 |usb_id|文字列（1行）|
