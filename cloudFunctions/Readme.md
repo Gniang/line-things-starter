@@ -9,7 +9,7 @@ https://us-central1-forestiot.cloudfunctions.net/function-1
 （1件のみのレコードを事前に作成しておく）
 
 |フィールドコード|種類|
-|---|---|---|
+|:---|:---|
 |usb1|文字列（1行）|
 |usb2|文字列（1行）|
 |usb3|文字列（1行）|
@@ -24,7 +24,7 @@ https://us-central1-forestiot.cloudfunctions.net/function-1
 ### Kintoneアプリ（保存先テーブル）のスキーマ 
 
 |フィールドコード|種類|
-|---|---|---|
+|---|---|
 |usb_id|文字列（1行）|
 |user|文字列（1行）|
 
